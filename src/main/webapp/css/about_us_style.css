@@ -1,0 +1,48 @@
+@font-face {
+    font-family: myFont;
+    src: url('../fonts/BYekan.woff');
+}
+
+body{
+    font-family: 'myFont',"Lato", sans-serif !important;
+    font-size: 20px;
+  
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+
+
+p {
+  line-height: 2rem;
+}
+
+.button-collapse {
+  color: #903;
+}
+
+.parallax-container {
+  min-height: 380px;
+  line-height: 0;
+  height: auto;
+  color: #000;
+}
+  .parallax-container .section {
+    width: 100%;
+  }
+
+@media only screen and (max-width : 992px) {
+  .parallax-container .section {
+    position: absolute;
+    top: 40%;
+  }
+  #index-banner .section {
+    top: 10%;
+  }
+}
+
+@media only screen and (max-width : 600px) {
+  #index-banner .section {
+    top: 0;
+  }
+}

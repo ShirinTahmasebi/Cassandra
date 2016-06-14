@@ -1,0 +1,23 @@
+@font-face {
+    font-family: myFont;
+    src: url('../fonts/BYekan.woff');
+}
+
+.table-body {
+	background-color: #ffffff;
+	font-family: 'myFont',"Lato", sans-serif;
+}
+
+table.table tbody tr:hover td{
+    color: #ED1C3B !important;
+}
+
+.editProfileBtn{
+	background-color: #FCEEF9;
+	color: #000;
+}
+
+.editProfileBtn:hover{
+	background-color: #FFEEF9;
+	border-color: #903;
+}
