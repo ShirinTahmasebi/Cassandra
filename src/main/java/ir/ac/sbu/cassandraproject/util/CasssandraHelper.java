@@ -7,6 +7,7 @@ import com.datastax.driver.core.Session;
 import ir.ac.sbu.cassandraproject.dao.model.Guest;
 import ir.ac.sbu.cassandraproject.dao.model.Hotel;
 import ir.ac.sbu.cassandraproject.dao.model.POI;
+import ir.ac.sbu.cassandraproject.dao.model.Room;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class CasssandraHelper {
 //        createPOITable(session);
 //        createGuestTable(session);
 //        createHotelByCityTable(session);
+//        createRoomTable(session);
 //        createReservationTable(session);
         insertFakeDataToTables(session);
     }
@@ -98,7 +100,7 @@ public class CasssandraHelper {
                 + "facilityOne text, \n"
                 + "facilityTwo text, \n"
                 + "facilityThree text, \n"
-                + "PRIMARY KEY (resId));";
+                + "PRIMARY KEY (roomId));";
         // Executing the query
         session.execute(tableFamilyQuery);
     }
@@ -149,6 +151,25 @@ public class CasssandraHelper {
     }
 
     private static void insertFakeDataToRoomTable(Session session) {
+        for (int i = 0; i < 1000; i++) {
+            Room room;
+            if (i % 3 == 0) {
+                // With One Facility
+                room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول");
+            } else if (i % 3 == 1) {
+                // With Two Facility
+                room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول", "ویژگی دوم");
+            } else {
+                // With Three Facility
+                room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول", "ویژگی دوم", "ویژگی سوم");
+            }
+            String query = "INSERT INTO room (roomId, hotelId, number, "
+                    + "cost, facilityOne, facilityTwo, facilityThree )"
+                    + " VALUES "
+                    + room.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
     }
 
     public static List<Hotel> getHotelData(Session session) {
@@ -179,7 +200,7 @@ public class CasssandraHelper {
         }
         return pois;
     }
-    
+
     public static List<Guest> getGuestData(Session session) {
         List<Guest> guests = new ArrayList<>();
         // Use select to get the guest we just entered
@@ -188,12 +209,31 @@ public class CasssandraHelper {
             Guest guest = new Guest(
                     row.getString("phone"),
                     row.getString("fname"),
-                    row.getString("lname"), 
+                    row.getString("lname"),
                     row.getString("email"));
-                    
+
             guests.add(guest);
         }
         return guests;
+    }
+
+    public static List<Room> getRoomData(Session session) {
+        List<Room> rooms = new ArrayList<>();
+        // Use select to get the guest we just entered
+        ResultSet results = session.execute("SELECT * FROM room");
+        for (Row row : results) {
+            Room room = new Room(
+                    row.getInt("roomId"),
+                    row.getInt("hotelId"),
+                    row.getInt("number"),
+                    row.getString("cost"),
+                    row.getString("facilityOne"),
+                    row.getString("facilityTwo"),
+                    row.getString("facilityThree"));
+
+            rooms.add(room);
+        }
+        return rooms;
     }
 
 }
