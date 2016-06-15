@@ -7,17 +7,13 @@
     <body style= "margin:0">
         <div id = "mySidenav" class = "sidenav">
             <a href="javascript:void(0)" class="closebtn menu-item-line" onclick="closeNav()">x</a>
-            <%
-                if (session.getAttribute(Tag.USER) != null) {
-                    out.println("<a href='user_profile_editable.jsp' class='firstitem menu-item-line'>پروفایل</a>");
-                } else {
-                    out.println("<a href='login.jsp' class='firstitem menu-item-line'>ورود</a>");
-                }
-            %>
-            <%if (session.getAttribute(Tag.USER) != null) {
-                    out.println("<a href='LogoutController' class='sixthitem menu-item-line'>خروج</a>");
-                }
-            %>
+            
+            <a href="hotels_list.jsp" class="firstitem menu-item-line">لیست&nbsp;هتلها</a>
+            <a href="gusets_list.jsp" class="seconditem menu-item-line">لیست&nbsp;مهمانها</a>
+            <a href="rooms_list.jsp" class="thirditem menu-item-line">لیست&nbsp;اتاقها</a>
+            <a href="reservations_list.jsp" class="forthitem menu-item-line">لیست&nbsp;رزروها</a>
+            <a href="pois_list.jsp" class="fifthitem menu-item-line">لیست&nbsp;مناظر</a>
+           
         </div>
         <div id="header">
             <span style="box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24); font-size:15px;cursor:pointer;position: absolute;right:10px;top:5px; border:1px solid black; margin: 5px; padding: 0px 8px 0px 8px; border-radius: 5px; background:#ffffff;" onclick="openNav()">

@@ -5,6 +5,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import ir.ac.sbu.cassandraproject.dao.model.Hotel;
+import ir.ac.sbu.cassandraproject.dao.model.POI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class CasssandraHelper {
     public static void createTable(Session session) {
         // TODO: baraye dafeye avval az comment bayad dar biad
 //        createHotelTable(session);
+        createPOITable(session);
 //        createGuestTable(session);
 //        createHotelByCityTable(session);
 //        createReservationTable(session);
@@ -81,7 +83,7 @@ public class CasssandraHelper {
                 + "poiId int, \n"
                 + "hotelId int, \n"
                 + "name text, \n"
-                + "PRIMARY KEY (resId));";
+                + "PRIMARY KEY (poiId));";
         // Executing the query
         session.execute(tableFamilyQuery);
     }
@@ -109,8 +111,8 @@ public class CasssandraHelper {
     }
 
     private static void insertFakeDataToHotelTable(Session session) {
-        for (int i = 0; i < 10; i++) {
-            Hotel hotel = new Hotel(i, "هتل شماره " + i, "0912111111" + i, "شهر شماره " + i);
+        for (int i = 0; i < 100; i++) {
+            Hotel hotel = new Hotel(i, "هتل شماره " + i % 5, "0912111111" + i, "شهر شماره " + i);
             String query = "INSERT INTO hotel (hotelId, name, phone, city)"
                     + " VALUES "
                     + hotel.toString();
@@ -127,6 +129,14 @@ public class CasssandraHelper {
     }
 
     private static void insertFakeDataToPOITable(Session session) {
+        for (int i = 0; i < 100; i++) {
+            POI poi = new POI(i, i % 50, "منظره شماره " + i);
+            String query = "INSERT INTO poi (poiId, hotelId, name)"
+                    + " VALUES "
+                    + poi.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
     }
 
     private static void insertFakeDataToRoomTable(Session session) {
@@ -134,7 +144,7 @@ public class CasssandraHelper {
 
     public static List<Hotel> getHotelData(Session session) {
         List<Hotel> hotels = new ArrayList<>();
-        // Use select to get the user we just entered
+        // Use select to get the hotel we just entered
         ResultSet results = session.execute("SELECT * FROM hotel");
         for (Row row : results) {
             Hotel hotel = new Hotel(
@@ -145,6 +155,20 @@ public class CasssandraHelper {
             hotels.add(hotel);
         }
         return hotels;
+    }
+
+    public static List<POI> getPOIData(Session session) {
+        List<POI> pois = new ArrayList<>();
+        // Use select to get the poi we just entered
+        ResultSet results = session.execute("SELECT * FROM poi");
+        for (Row row : results) {
+            POI poi = new POI(
+                    row.getInt("poiId"),
+                    row.getInt("hotelId"),
+                    row.getString("name"));
+            pois.add(poi);
+        }
+        return pois;
     }
 
 }
