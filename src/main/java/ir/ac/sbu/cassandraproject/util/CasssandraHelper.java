@@ -4,6 +4,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import ir.ac.sbu.cassandraproject.dao.model.Guest;
 import ir.ac.sbu.cassandraproject.dao.model.Hotel;
 import ir.ac.sbu.cassandraproject.dao.model.POI;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class CasssandraHelper {
     public static void createTable(Session session) {
         // TODO: baraye dafeye avval az comment bayad dar biad
 //        createHotelTable(session);
-        createPOITable(session);
+//        createPOITable(session);
 //        createGuestTable(session);
 //        createHotelByCityTable(session);
 //        createReservationTable(session);
@@ -119,10 +120,18 @@ public class CasssandraHelper {
             System.out.println(query);
             session.execute(query);
         }
-
     }
 
     private static void insertFakeDataToGuestTable(Session session) {
+        for (int i = 0; i < 100; i++) {
+            Guest guest = new Guest("0912111111" + i, "نام مهمان " + i,
+                    "نام خانوادگی مهمان " + i, "ایمیل مهمان" + i);
+            String query = "INSERT INTO guest (phone, fname, lname, email)"
+                    + " VALUES "
+                    + guest.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
     }
 
     private static void insertFakeDataToReservationTable(Session session) {
@@ -169,6 +178,22 @@ public class CasssandraHelper {
             pois.add(poi);
         }
         return pois;
+    }
+    
+    public static List<Guest> getGuestData(Session session) {
+        List<Guest> guests = new ArrayList<>();
+        // Use select to get the guest we just entered
+        ResultSet results = session.execute("SELECT * FROM guest");
+        for (Row row : results) {
+            Guest guest = new Guest(
+                    row.getString("phone"),
+                    row.getString("fname"),
+                    row.getString("lname"), 
+                    row.getString("email"));
+                    
+            guests.add(guest);
+        }
+        return guests;
     }
 
 }
