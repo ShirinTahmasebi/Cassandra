@@ -3,6 +3,14 @@ package ir.ac.sbu.cassandraproject.dao.model;
 public class POI {
 
     public String name;
-    public String desc;
-    public String phone;
+    public int poiId;
+    public int hotelId;
+    
+    @Override
+    public String toString() {
+        return "( "
+                + poiId + ", "
+                + hotelId + ", '"
+                + name + "') ";
+    }
 }

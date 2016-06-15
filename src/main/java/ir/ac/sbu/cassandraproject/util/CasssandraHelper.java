@@ -1,7 +1,12 @@
 package ir.ac.sbu.cassandraproject.util;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import ir.ac.sbu.cassandraproject.dao.model.Hotel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CasssandraHelper {
 
@@ -13,23 +18,25 @@ public class CasssandraHelper {
         cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
         session = cluster.connect();
 
-        //Query
+        // Query
         String query = "CREATE KEYSPACE IF NOT EXISTS hotelie  WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};";
 
-        //Executing the query
+        // Executing the query
         session.execute(query);
 
-        //using the KeySpace
+        // Using the KeySpace
         session.execute("USE hotelie");
 
         return session;
     }
 
     public static void createTable(Session session) {
+        // TODO: baraye dafeye avval az comment bayad dar biad
 //        createHotelTable(session);
 //        createGuestTable(session);
 //        createHotelByCityTable(session);
 //        createReservationTable(session);
+        insertFakeDataToTables(session);
     }
 
     private static void createHotelTable(Session session) {
@@ -37,10 +44,9 @@ public class CasssandraHelper {
                 + "hotelId int, \n"
                 + "name text, \n"
                 + "phone text, \n"
-                + "email text, \n"
                 + "city text, \n"
                 + "PRIMARY KEY (hotelId));";
-        //Executing the query
+        // Executing the query
         session.execute(tableFamilyQuery);
     }
 
@@ -51,7 +57,7 @@ public class CasssandraHelper {
                 + "lname text, \n"
                 + "email text, \n"
                 + "PRIMARY KEY (phone));";
-        //Executing the query
+        // Executing the query
         session.execute(tableFamilyQuery);
     }
 
@@ -76,7 +82,7 @@ public class CasssandraHelper {
                 + "hotelId int, \n"
                 + "name text, \n"
                 + "PRIMARY KEY (resId));";
-        //Executing the query
+        // Executing the query
         session.execute(tableFamilyQuery);
     }
 
@@ -90,8 +96,55 @@ public class CasssandraHelper {
                 + "facilityTwo text, \n"
                 + "facilityThree text, \n"
                 + "PRIMARY KEY (resId));";
-        //Executing the query
+        // Executing the query
         session.execute(tableFamilyQuery);
+    }
+
+    public static void insertFakeDataToTables(Session session) {
+        insertFakeDataToHotelTable(session);
+        insertFakeDataToGuestTable(session);
+        insertFakeDataToReservationTable(session);
+        insertFakeDataToPOITable(session);
+        insertFakeDataToRoomTable(session);
+    }
+
+    private static void insertFakeDataToHotelTable(Session session) {
+        for (int i = 0; i < 10; i++) {
+            Hotel hotel = new Hotel(i, "هتل شماره " + i, "0912111111" + i, "شهر شماره " + i);
+            String query = "INSERT INTO hotel (hotelId, name, phone, city)"
+                    + " VALUES "
+                    + hotel.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
+
+    }
+
+    private static void insertFakeDataToGuestTable(Session session) {
+    }
+
+    private static void insertFakeDataToReservationTable(Session session) {
+    }
+
+    private static void insertFakeDataToPOITable(Session session) {
+    }
+
+    private static void insertFakeDataToRoomTable(Session session) {
+    }
+
+    public static List<Hotel> getHotelData(Session session) {
+        List<Hotel> hotels = new ArrayList<>();
+        // Use select to get the user we just entered
+        ResultSet results = session.execute("SELECT * FROM hotel");
+        for (Row row : results) {
+            Hotel hotel = new Hotel(
+                    row.getInt("hotelId"),
+                    row.getString("name"),
+                    row.getString("phone"),
+                    row.getString("city"));
+            hotels.add(hotel);
+        }
+        return hotels;
     }
 
 }
