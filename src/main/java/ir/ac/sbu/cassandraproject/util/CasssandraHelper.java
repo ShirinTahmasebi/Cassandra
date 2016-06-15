@@ -7,9 +7,11 @@ import com.datastax.driver.core.Session;
 import ir.ac.sbu.cassandraproject.dao.model.Guest;
 import ir.ac.sbu.cassandraproject.dao.model.Hotel;
 import ir.ac.sbu.cassandraproject.dao.model.POI;
+import ir.ac.sbu.cassandraproject.dao.model.Reservation;
 import ir.ac.sbu.cassandraproject.dao.model.Room;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CasssandraHelper {
 
@@ -118,7 +120,8 @@ public class CasssandraHelper {
 
     private static void insertFakeDataToHotelTable(Session session) {
         for (int i = 0; i < 100; i++) {
-            Hotel hotel = new Hotel(i, "هتل شماره " + i % 5, "0912111111" + i, "شهر شماره " + i);
+            Hotel hotel = new Hotel(i, "هتل شماره " + i % 5, "0912111111"
+                    + i, "شهر شماره " + i);
             String query = "INSERT INTO hotel (hotelId, name, phone, city)"
                     + " VALUES "
                     + hotel.toString();
@@ -140,6 +143,21 @@ public class CasssandraHelper {
     }
 
     private static void insertFakeDataToReservationTable(Session session) {
+        //note a single Random object is reused here
+        Random randomGenerator = new Random();
+        for (int i = 0; i < 100; i++) {
+            int hotelId = randomGenerator.nextInt(100);
+            int roomId = randomGenerator.nextInt(100);
+            int guestId = randomGenerator.nextInt(100);
+
+            Reservation reservation
+                    = new Reservation(i, hotelId, roomId, guestId);
+            String query = "INSERT INTO reservation (resId, hotelId, roomId, guestId)"
+                    + " VALUES "
+                    + reservation.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
     }
 
     private static void insertFakeDataToPOITable(Session session) {
@@ -161,10 +179,15 @@ public class CasssandraHelper {
                 room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول");
             } else if (i % 3 == 1) {
                 // With Two Facility
-                room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول", "ویژگی دوم");
+                room = new Room(i, i % 100, i, "قیمت اتاق " + i,
+                        "ویژگی اول",
+                        "ویژگی دوم");
             } else {
                 // With Three Facility
-                room = new Room(i, i % 100, i, "قیمت اتاق " + i, "ویژگی اول", "ویژگی دوم", "ویژگی سوم");
+                room = new Room(i, i % 100, i, "قیمت اتاق " + i,
+                        "ویژگی اول",
+                        "ویژگی دوم",
+                        "ویژگی سوم");
             }
             String query = "INSERT INTO room (roomId, hotelId, number, "
                     + "cost, facilityOne, facilityTwo, facilityThree )"
@@ -222,7 +245,7 @@ public class CasssandraHelper {
 
     public static List<Room> getRoomData(Session session) {
         List<Room> rooms = new ArrayList<>();
-        // Use select to get the guest we just entered
+        // Use select to get the room we just entered
         ResultSet results = session.execute("SELECT * FROM room");
         for (Row row : results) {
             Room room = new Room(
@@ -237,6 +260,22 @@ public class CasssandraHelper {
             rooms.add(room);
         }
         return rooms;
+    }
+
+    public static List<Reservation> getReservationData(Session session) {
+        List<Reservation> reservations = new ArrayList<>();
+        // Use select to get the room we just entered
+        ResultSet results = session.execute("SELECT * FROM reservation");
+        for (Row row : results) {
+            Reservation reservation = new Reservation(
+                    row.getInt("resId"),
+                    row.getInt("hotelId"),
+                    row.getInt("roomId"),
+                    row.getInt("guestId"));
+
+            reservations.add(reservation);
+        }
+        return reservations;
     }
 
 }

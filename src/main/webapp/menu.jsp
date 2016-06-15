@@ -13,6 +13,7 @@
             <a href="rooms_list.jsp" class="thirditem menu-item-line">لیست&nbsp;اتاقها</a>
             <a href="reservations_list.jsp" class="forthitem menu-item-line">لیست&nbsp;رزروها</a>
             <a href="pois_list.jsp" class="fifthitem menu-item-line">لیست&nbsp;مناظر</a>
+            <a href="reserve.jsp" class="sixthitem menu-item-line">رزرو&nbsp;اتاق</a>
            
         </div>
         <div id="header">
