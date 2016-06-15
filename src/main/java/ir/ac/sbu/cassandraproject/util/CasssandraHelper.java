@@ -22,7 +22,10 @@ public class CasssandraHelper {
         session = cluster.connect();
 
         // Query
-        String query = "CREATE KEYSPACE IF NOT EXISTS hotelie  WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};";
+        String query = "CREATE KEYSPACE IF NOT EXISTS hotelie  "
+                + "WITH replication = {"
+                + "'class': 'SimpleStrategy', "
+                + "'replication_factor' : 3};";
 
         // Executing the query
         session.execute(query);
