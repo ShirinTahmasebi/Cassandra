@@ -79,6 +79,11 @@ body {
     padding-top: 280px;
 }
 
+.sidenav .eighthitem{
+    z-index: 3;
+    padding-top: 320px;
+}
+
 .sidenav .menu-item-line:hover, .offcanvas .menu-item-line:focus{
     color: #ED1C3B;
 }

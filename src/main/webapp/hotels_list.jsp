@@ -33,7 +33,7 @@
                             <th style="text-align:right;">شهر</th>
                             <th style="text-align:right;">تلفن</th>
                         </tr>  
-                    </thead>  
+                    </thead>    
                     <tbody>  
                         <%  List<Hotel> hotels = new ArrayList<>();
                             hotels = CasssandraHelper.getHotelData(CasssandraHelper.getSession());

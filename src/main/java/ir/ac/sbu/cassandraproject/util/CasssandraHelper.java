@@ -260,6 +260,34 @@ public class CasssandraHelper {
         }
         return hotels;
     }
+    
+    
+    public static List<Hotel> getHotelByCityData(Session session, String hotelCity) {
+        List<Hotel> hotels = new ArrayList<>();
+        // Use select to get the hotel we just entered
+        ResultSet results = session.execute("SELECT * FROM hotel WHERE city = '" + hotelCity + "' ALLOW FILTERING;");
+        for (Row row : results) {
+            Hotel hotel = new Hotel(
+                    row.getInt("hotelId"),
+                    row.getString("name"),
+                    row.getString("phone"),
+                    row.getString("city"));
+            hotels.add(hotel);
+        }
+        return hotels;
+    }
+
+    public static List<String> getCityData(Session session) {
+        List<String> cities = new ArrayList<>();
+        // Use select to get the hotel we just entered
+        ResultSet results = session.execute("SELECT * FROM hotel");
+        for (Row row : results) {
+            if (!cities.contains(row.getString("city"))) {
+                cities.add(row.getString("city"));
+            }
+        }
+        return cities;
+    }
 
     public static List<POI> getPOIData(Session session) {
         List<POI> pois = new ArrayList<>();

@@ -15,6 +15,7 @@
             <a href="pois_list.jsp" class="fifthitem menu-item-line">لیست&nbsp;مناظر</a>
             <a href="available_room_list.jsp" class="sixthitem menu-item-line">لیست&nbsp;اتاقهای&nbsp;خالی</a>
             <a href="reserve.jsp" class="seventhitem menu-item-line">رزرو&nbsp;اتاق</a>
+            <a href="search_hotel.jsp" class="eighthitem menu-item-line">فیلتر&nbsp;هتلها</a>
 
         </div>
         <div id="header">
