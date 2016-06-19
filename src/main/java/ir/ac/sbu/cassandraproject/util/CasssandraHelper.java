@@ -4,6 +4,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import ir.ac.sbu.cassandraproject.dao.model.AvailableRoom;
 import ir.ac.sbu.cassandraproject.dao.model.Guest;
 import ir.ac.sbu.cassandraproject.dao.model.Hotel;
 import ir.ac.sbu.cassandraproject.dao.model.POI;
@@ -46,7 +47,8 @@ public class CasssandraHelper {
 //        createHotelByCityTable(session);
 //        createRoomTable(session);
 //        createReservationTable(session);
-        insertFakeDataToTables(session);
+//        createAvailableRoomTable(session);
+//        insertFakeDataToTables(session);
     }
 
     private static void createHotelTable(Session session) {
@@ -80,7 +82,7 @@ public class CasssandraHelper {
                 + "resId int, \n"
                 + "hotelId int, \n"
                 + "roomId int, \n"
-                + "guestId int, \n"
+                + "guestId text, \n"
                 + "PRIMARY KEY (resId));";
         //Executing the query
         session.execute(tableFamilyQuery);
@@ -110,12 +112,22 @@ public class CasssandraHelper {
         session.execute(tableFamilyQuery);
     }
 
+    private static void createAvailableRoomTable(Session session) {
+        String tableFamilyQuery = "CREATE TABLE availableRoom (\n"
+                + "roomId int, \n"
+                + "hotelId int, \n"
+                + "PRIMARY KEY (roomId, hotelId));";
+        // Executing the query
+        session.execute(tableFamilyQuery);
+    }
+
     public static void insertFakeDataToTables(Session session) {
         insertFakeDataToHotelTable(session);
         insertFakeDataToGuestTable(session);
         insertFakeDataToReservationTable(session);
         insertFakeDataToPOITable(session);
         insertFakeDataToRoomTable(session);
+        insertFakeDataToAvailableRoomTable(session);
     }
 
     private static void insertFakeDataToHotelTable(Session session) {
@@ -143,21 +155,29 @@ public class CasssandraHelper {
     }
 
     private static void insertFakeDataToReservationTable(Session session) {
-        //note a single Random object is reused here
+        // Note a single Random object is reused here
         Random randomGenerator = new Random();
         for (int i = 0; i < 100; i++) {
             int hotelId = randomGenerator.nextInt(100);
             int roomId = randomGenerator.nextInt(100);
             int guestId = randomGenerator.nextInt(100);
-
+            Guest g = getGuestData(session).get(guestId);
             Reservation reservation
-                    = new Reservation(i, hotelId, roomId, guestId);
+                    = new Reservation(i, hotelId, roomId, g.phone);
             String query = "INSERT INTO reservation (resId, hotelId, roomId, guestId)"
                     + " VALUES "
                     + reservation.toString();
             System.out.println(query);
             session.execute(query);
         }
+    }
+
+    public static void insertDataToReservationTable(Session session, Reservation reservation) {
+        String query = "INSERT INTO reservation (resId, hotelId, roomId, guestId)"
+                + " VALUES "
+                + reservation.toString();
+        System.out.println(query);
+        session.execute(query);
     }
 
     private static void insertFakeDataToPOITable(Session session) {
@@ -169,6 +189,34 @@ public class CasssandraHelper {
             System.out.println(query);
             session.execute(query);
         }
+    }
+
+    private static void insertFakeDataToAvailableRoomTable(Session session) {
+        for (int i = 0; i < 20; i++) {
+            // Note a single Random object is reused here
+            Random randomGenerator = new Random();
+            int hotelId = randomGenerator.nextInt(100);
+            int roomId = randomGenerator.nextInt(100);
+            AvailableRoom availableRoom = new AvailableRoom(roomId, hotelId);
+            String query = "INSERT INTO availableRoom (roomId, hotelId)"
+                    + " VALUES "
+                    + availableRoom.toString();
+            System.out.println(query);
+            session.execute(query);
+        }
+    }
+
+    public static void deleteFromAvailableRoomTable(Session session, AvailableRoom room) {
+
+        String query = "DELETE FROM availableRoom WHERE"
+                + " roomId = "
+                + room.roomId
+                + " AND hotelId ="
+                + room.hotelId
+                + ";";
+        System.out.println(query);
+        session.execute(query);
+
     }
 
     private static void insertFakeDataToRoomTable(Session session) {
@@ -271,11 +319,24 @@ public class CasssandraHelper {
                     row.getInt("resId"),
                     row.getInt("hotelId"),
                     row.getInt("roomId"),
-                    row.getInt("guestId"));
+                    row.getString("guestId"));
 
             reservations.add(reservation);
         }
         return reservations;
+    }
+
+    public static List<AvailableRoom> getAvailableRoomData(Session session) {
+        List<AvailableRoom> rooms = new ArrayList<>();
+        // Use select to get the room we just entered
+        ResultSet results = session.execute("SELECT * FROM availableRoom");
+        for (Row row : results) {
+            AvailableRoom room = new AvailableRoom(
+                    row.getInt("roomId"),
+                    row.getInt("hotelId"));
+            rooms.add(room);
+        }
+        return rooms;
     }
 
 }

@@ -5,9 +5,9 @@ public class Reservation {
     public int resId;
     public int hotelId;
     public int roomId;
-    public int guestId;
+    public String guestId;
 
-    public Reservation(int resId, int hotelId, int roomId, int guestId) {
+    public Reservation(int resId, int hotelId, int roomId, String guestId) {
         this.resId = resId;
         this.hotelId = hotelId;
         this.roomId = roomId;
@@ -19,7 +19,7 @@ public class Reservation {
         return "( "
                 + resId + ", "
                 + hotelId + ", "
-                + roomId + ", "
-                + guestId + ") ";
+                + roomId + ", '"
+                + guestId + "') ";
     }
 }

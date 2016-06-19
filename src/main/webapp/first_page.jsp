@@ -65,37 +65,6 @@
                     <div class="col-sm-2"></div>
                 </div>
 
-                <br>
-                <br>
-                <br>
-                <br>
-                <div style="font-size:25px;"> هتلهایی که در سایت به ثبت رسیده اند:</div>
-                <div class="table-responsive">
-                    <table id="hotelTable"class="table hover" collapsing="0" width="100%" >
-                        <thead>  
-                            <tr >  
-                                <th style="text-align:right;">کلید</th>  
-                                <th style="text-align:right;">نام</th>
-                                <th style="text-align:right;">شهر</th>
-                                <th style="text-align:right;">تلفن</th>
-                            </tr>  
-                        </thead>  
-                        <tbody>  
-                            <%  List<Hotel> hotels = new ArrayList<>();
-                                hotels = CasssandraHelper.getHotelData(CasssandraHelper.getSession());
-                                for (Hotel hotel : hotels) {
-                            %>
-                            <tr>
-                                <td><%=hotel.id + ""%></td>  
-                                <td><%=hotel.name%></td>
-                                <td><%=hotel.city%></td>
-                                <td><%=hotel.phone%></td>
-                            </tr>
-                            <%}%>
-
-                        </tbody>  
-                    </table> 
-                </div>
 
             </div>	
         </div>
